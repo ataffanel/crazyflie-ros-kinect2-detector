@@ -23,7 +23,7 @@ static void publishTf(float x, float y, float z, float angle)
   tf::Transform transform;
   transform.setOrigin( tf::Vector3(x, y, z) );
   tf::Quaternion q;
-  q.setRPY(0, 0, angle);
+  q.setRPY(0, 0, (angle/180)*M_PI);
   transform.setRotation(q);
   br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "base_link"));
 }
@@ -31,14 +31,14 @@ static void publishTf(float x, float y, float z, float angle)
 void pointsCb(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
   if (cf.found) {
-    int pos = cf.x*msg->point_step + cf.y*msg->row_step;
+    int pos = (((int)cf.x)*msg->point_step) + (((int)cf.y)*msg->row_step);
     float x = *((float*)&msg->data[pos + msg->fields[0].offset]);
     float y = *((float*)&msg->data[pos + msg->fields[1].offset]);
     float z = *((float*)&msg->data[pos + msg->fields[2].offset]);
 
     publishTf(x, y, z, cf.angle);
 
-    ROS_INFO("Crazyflie detected at : %f %f (%f, %f, %f)", cf.x, cf.y, x, y, z);
+    ROS_INFO("Crazyflie detected at : %f %f a%f (%f, %f, %f)", cf.x, cf.y, cf.angle, x, y, z);
   }
 }
 
