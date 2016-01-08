@@ -18,8 +18,8 @@
 using namespace cv;
 using namespace std;
 
-static int th_lower = 10000;
-static int th_upper = 200000;
+static int th_lower = 20000;
+static int th_upper = 400000;
 
 //static int th_lower = 0;
 //static int th_upper = 200000;
