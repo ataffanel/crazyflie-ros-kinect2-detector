@@ -6,6 +6,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <tf/transform_broadcaster.h>
+
 #include "tracking.h"
 
 int detect_x  = -1;
@@ -15,6 +17,17 @@ cf_instance cf;
 
 ros::Publisher imageThPublisher;
 
+static void publishTf(float x, float y, float z, float angle)
+{
+  static tf::TransformBroadcaster br;
+  tf::Transform transform;
+  transform.setOrigin( tf::Vector3(x, y, z) );
+  tf::Quaternion q;
+  q.setRPY(0, 0, angle);
+  transform.setRotation(q);
+  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "base_link"));
+}
+
 void pointsCb(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
   if (cf.found) {
@@ -23,7 +36,9 @@ void pointsCb(const sensor_msgs::PointCloud2ConstPtr& msg)
     float y = *((float*)&msg->data[pos + msg->fields[1].offset]);
     float z = *((float*)&msg->data[pos + msg->fields[2].offset]);
 
-    ROS_ERROR("Crazyflie detected at : %f %f (%f, %f, %f)", cf.x, cf.y, x, y, z);
+    publishTf(x, y, z, cf.angle);
+
+    ROS_INFO("Crazyflie detected at : %f %f (%f, %f, %f)", cf.x, cf.y, x, y, z);
   }
 }
 
