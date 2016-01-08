@@ -1,8 +1,12 @@
 # crazyflie-ros-kinect2-detector
 
-Crazyflie kinect2 detector ROS package. Port of the windows/zmq detector from https://github.com/bitcraze/kinect-detector-windows
-for ros.
+Crazyflie kinect2 detector ROS package. Port of the windows/zmq detector from
+https://github.com/bitcraze/kinect-detector-windows for ros.
 
-This code is still very much work in progress. The detection is published as an image on /detector/threshold
+Requires a marker under the Crazyflie2. The marker and hardware setup is
+on the [bitcraze wiki](https://wiki.bitcraze.io/doc:crazyflie:vision:setup#hardware_setup).
 
-Tested using https://github.com/code-iai/iai_kinect2
+The detector publishes the detection image on /detector/threshold and the
+Crazyflie pose on transform base_link.
+
+The pose only contains x,y,z and yaw. Roll and pitch are 0.
